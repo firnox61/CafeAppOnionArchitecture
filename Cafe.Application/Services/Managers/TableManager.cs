@@ -1,0 +1,92 @@
+﻿using AutoMapper;
+using Cafe.Application.DTOs.Orders;
+using Cafe.Application.DTOs.Tables;
+using Cafe.Application.Interfaces.Services.Contracts;
+using Cafe.Application.Repositories;
+using Cafe.Application.Utilities.Results;
+using Cafe.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Cafe.Application.Services.Managers
+{
+
+    public class TableManager : ITableService
+    {
+        private readonly ITableDal _tableDal;
+        private readonly IMapper _mapper;
+
+        public TableManager(ITableDal tableDal, IMapper mapper)
+        {
+            _tableDal = tableDal;
+            _mapper = mapper;
+        }
+
+
+        public async Task<IResult> Add(TableCreateDto tableCreateDto)
+        {
+            var newTable = _mapper.Map<Table>(tableCreateDto);
+            await _tableDal.AddAsync(newTable);
+            return new SuccessResult();
+        }
+
+        public async Task<IResult> Delete(int id)
+        {
+            var result = await _tableDal.GetAsync(t => t.Id == id);
+            await _tableDal.DeleteAsync(result);
+            return new SuccessResult();
+        }
+        // [CacheAspect]
+        public async Task<IDataResult<List<TableGetDto>>> GetAllAsync()
+        {
+            var tables = await _tableDal.GetAllWithOrdersAsync();
+
+            var dtos = tables.Select(table => new TableGetDto
+            {
+                Id = table.Id,
+                Name = table.Name,
+                ActiveOrders = table.Orders
+                    .Where(o => !o.IsPaid)
+                    .Select(o => new OrderSummaryDto
+                    {
+                        OrderId = o.Id,
+                        CreatedAt = o.CreatedAt,
+                        TotalAmount = o.OrderItems.Sum(i => i.Quantity * i.UnitPrice)
+                    }).ToList()
+            }).ToList();
+
+            return new SuccessDataResult<List<TableGetDto>>(dtos);
+        }
+
+
+        public async Task<IDataResult<TableGetDto?>> GetById(int id)
+        {
+
+
+
+            var table = await _tableDal.GetWithOrdersByIdAsync(id);
+            if (table == null)
+                return new ErrorDataResult<TableGetDto?>("Masa bulunamadı.");
+
+            var dto = _mapper.Map<TableGetDto>(table);
+            return new SuccessDataResult<TableGetDto?>(dto);
+        }
+
+        public async Task<IResult> Update(TableUpdateDto tableUpdateDto)
+        {
+            var existtTable = await _tableDal.GetAsync(t => t.Id == tableUpdateDto.Id);
+            if (existtTable == null)
+            {
+                return new ErrorResult("Masa bulunamadı");
+            }
+
+            existtTable.Name = tableUpdateDto.Name;
+
+            await _tableDal.UpdateAsync(existtTable);
+            return new SuccessResult();
+        }
+    }
+}

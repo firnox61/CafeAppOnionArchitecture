@@ -1,0 +1,22 @@
+﻿using Cafe.Infrastructure.IoC;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Cafe.WebAPI.DependencyInjection
+{
+    public static class ServiceCollectionExtensions
+    {//servis bağımlılıklarımızın eklediğimiz yer
+        public static IServiceCollection AddDependencyResolvers(this IServiceCollection serviceCollection, ICoreModule[] modules)
+        {
+            foreach (var module in modules)
+            {
+                module.Load(serviceCollection);
+            }
+            return ServiceTool.Create(serviceCollection);
+        }
+    }
+}
