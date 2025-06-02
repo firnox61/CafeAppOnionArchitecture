@@ -136,10 +136,16 @@ namespace Cafe.Application.Services.Managers
             // return new SuccessDataResult<List<Product>>(await _productDal.GetAllAsync());
         }
 
-        public async Task<IDataResult<Product?>> GetById(int id)
+        public async Task<IDataResult<ProductGetDto?>> GetById(int id)
         {
-            await _productDal.GetAsync(p => p.Id == id);
-            return new SuccessDataResult<Product?>();
+            var result = await _productDal.GetProductDetailsAsync();
+            var pruduct= result.FirstOrDefault(p=>p.Id==id);
+            if(pruduct == null)
+            {
+                return new ErrorDataResult<ProductGetDto?>("Ürün bulunamadı");
+            }
+          
+            return new SuccessDataResult<ProductGetDto?>(pruduct);
         }
 
         // [TransactionScopeAspect]
@@ -252,18 +258,26 @@ namespace Cafe.Application.Services.Managers
             var records = await _productionHistoryDal.GetAllWithProductAsync();
 
             var report = records
-                .GroupBy(p => p.Product.Name)
-                .Select(g => new ProductProductionHistoryDto
+                .GroupBy(p => p.ProductId) // Her ürün/silinmiş ürün ID'ye göre gruplanır
+                .Select(g =>
                 {
-                    ProductName = g.Key,
-                    TotalProduced = g.Sum(x => x.QuantityProduced),
-                    LastProducedAt = g.Max(x => x.ProducedAt)
+                    var firstRecord = g.First();
+                    var product = firstRecord.Product;
+
+                    return new ProductProductionHistoryDto
+                    {
+                        ProductName = product?.Name ?? "Silinmiş Ürün",
+                        Description = product?.Description ?? "Bu ürün sistemden silinmiştir.",
+                        TotalProduced = g.Sum(x => x.QuantityProduced),
+                        LastProducedAt = g.Max(x => x.ProducedAt)
+                    };
                 })
                 .OrderByDescending(x => x.TotalProduced)
                 .ToList();
 
             return new SuccessDataResult<List<ProductProductionHistoryDto>>(report);
         }
+
         public async Task<IResult> ProduceProduct(int productId, int quantity)
         {
             var product = await _productDal.GetAsync(p => p.Id == productId);

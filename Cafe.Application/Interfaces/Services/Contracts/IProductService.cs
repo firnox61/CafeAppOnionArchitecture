@@ -12,7 +12,7 @@ namespace Cafe.Application.Interfaces.Services.Contracts
     public interface IProductService
     {
         Task<IDataResult<List<ProductGetDto>>> GetAllAsync();
-        Task<IDataResult<Product?>> GetById(int id);
+        Task<IDataResult<ProductGetDto?>> GetById(int id);
         Task<IResult> Add(ProductCreateDto productCreateDto);
         Task<IResult> Update(ProductUpdateDto productUpdateDto);
         Task<IResult> Delete(int productId);

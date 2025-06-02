@@ -33,8 +33,4 @@
     <ProjectReference Include="..\Cafe.Domain\Cafe.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
-
 </Project>

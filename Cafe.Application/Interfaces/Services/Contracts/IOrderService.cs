@@ -14,7 +14,7 @@ namespace Cafe.Application.Interfaces.Services.Contracts
         Task<IDataResult<List<OrderGetDto>>> GetAllAsync();
         Task<IDataResult<OrderGetDto>> GetById(int id);
         Task<IResult> Add(OrderCreateDto orderCreateDto);
-        Task<IResult> Update(Order order);
+        Task<IResult> Update(OrderUpdateDto orderUpdateDto);
         Task<IResult> Delete(Order order);
         Task<IResult> DeleteOrderAsync(int orderId);
     }

@@ -28,7 +28,15 @@ namespace Cafe.Application.MappingProfiles
 
 
             CreateMap<Table, TableCreateDto>().ReverseMap();
-            CreateMap<Table, TableGetDto>().ReverseMap();
+            CreateMap<Table, TableGetDto>()
+     .ForMember(dest => dest.ActiveOrders, opt => opt.MapFrom(src =>
+         src.Orders.Select(o => new OrderSummaryDto
+         {
+             OrderId = o.Id,
+             CreatedAt = o.CreatedAt,
+             TotalAmount = o.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice)
+         }).ToList()
+     ));
             CreateMap<Table, TableUpdateDto>().ReverseMap();
 
             CreateMap<Payment, PaymentCreateDto>().ReverseMap();
@@ -37,8 +45,13 @@ namespace Cafe.Application.MappingProfiles
             CreateMap<Order, OrderCreateDto>().ReverseMap();
             CreateMap<OrderItem, OrderItemsCreateDto>().ReverseMap();
 
+
             //  CreateMap<Order, OrderGetDto>().ReverseMap();
             //   CreateMap<OrderItem, OrderItemGetDto>().ReverseMap();
+            CreateMap<OrderUpdateDto, Order>()
+    .ForMember(dest => dest.OrderItems, opt => opt.Ignore()); // OrderItems elle kontrol ediliyor
+
+            CreateMap<OrderItemsCreateDto, OrderItem>();
 
 
             // AutoMapper profile:

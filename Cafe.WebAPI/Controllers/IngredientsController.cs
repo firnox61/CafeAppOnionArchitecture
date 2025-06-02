@@ -27,8 +27,16 @@ namespace Cafe.WebAPI.Controllers
              }
              return BadRequest(result);
          }
-       
 
+        [HttpPost("increase-stock")]
+        public async Task<IActionResult> IncreaseStock(int id, int stock)
+        {
+            var result = await _ingredientService.IncreaseStockAsync(id, stock);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
+        }
         [HttpPut("update")]
         public async Task<IActionResult> Update(IngredientUpdateDto ingredientUpdateDto)
         {

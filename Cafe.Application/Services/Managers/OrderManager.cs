@@ -19,18 +19,26 @@ namespace Cafe.Application.Services.Managers
         private readonly IOrderItemDal _orderItemDal;
         private readonly IProductDal _productDal;
         private readonly IMapper _mapper;
+        private readonly ITableDal _tableDal;
 
 
-        public OrderManager(IOrderDal orderDal, IMapper mapper, IProductDal productDal, IOrderItemDal orderItemDal)
+        public OrderManager(IOrderDal orderDal, IMapper mapper, IProductDal productDal, IOrderItemDal orderItemDal, ITableDal tableDal)
         {
             _orderDal = orderDal;
             _mapper = mapper;
             _productDal = productDal;
             _orderItemDal = orderItemDal;
+            _tableDal = tableDal;
         }
 
         public async Task<IResult> Add(OrderCreateDto orderCreateDto)
         {
+            // ✅ TableId geçerli mi?
+            var table = await _tableDal.GetAsync(t => t.Id == orderCreateDto.TableId);
+            if (table == null)
+                return new ErrorResult($"Geçersiz masa numarası: {orderCreateDto.TableId}");
+
+
             // 1. Order nesnesini oluştur
             var newOrder = new Order
             {
@@ -38,7 +46,7 @@ namespace Cafe.Application.Services.Managers
                 CreatedAt = DateTime.Now,
                 IsPaid = false
             };
-
+         
             // 2. Önce veritabanına yaz ki Id oluşsun
             await _orderDal.AddAsync(newOrder); // içinde SaveChangesAsync() olmalı
 
@@ -107,11 +115,52 @@ namespace Cafe.Application.Services.Managers
             return new SuccessDataResult<OrderGetDto>(dto);
         }
 
-        public async Task<IResult> Update(Order order)
+        public async Task<IResult> Update(OrderUpdateDto orderUpdateDto)
         {
-            await _orderDal.UpdateAsync(order);
-            return new SuccessResult();
+            var existingOrder = await _orderDal.GetAsync(o => o.Id == orderUpdateDto.Id);
+            if (existingOrder == null)
+                return new ErrorResult("Sipariş bulunamadı.");
+
+            // Eski sipariş ürünlerini silmeden önce stokları geri ekle
+            var oldItems = await _orderItemDal.GetAllAsync(oi => oi.OrderId == existingOrder.Id);
+            foreach (var item in oldItems)
+            {
+                var product = await _productDal.GetAsync(p => p.Id == item.ProductId);
+                if (product != null)
+                {
+                    product.Stock += item.Quantity;
+                    await _productDal.UpdateAsync(product);
+                }
+
+                await _orderItemDal.DeleteAsync(item);
+            }
+
+            // Yeni ürünleri işle
+            foreach (var itemDto in orderUpdateDto.Items)
+            {
+                var product = await _productDal.GetAsync(p => p.Id == itemDto.ProductId);
+                if (product == null)
+                    continue;
+
+                if (product.Stock < itemDto.Quantity)
+                    return new ErrorResult($"Yetersiz ürün stoğu: {product.Name} (Mevcut: {product.Stock}, İstenen: {itemDto.Quantity})");
+
+                product.Stock -= itemDto.Quantity;
+                await _productDal.UpdateAsync(product);
+
+                if (product.Stock <= product.MinStockThreshold)
+                    Console.WriteLine($"⚠️ Ürün stoğu kritik seviyeye düştü: {product.Name} (Mevcut: {product.Stock})");
+
+                var newOrderItem = _mapper.Map<OrderItem>(itemDto);
+                newOrderItem.OrderId = existingOrder.Id;
+                newOrderItem.UnitPrice = product.Price; // 💡 doğru fiyatla kaydet
+
+                await _orderItemDal.AddAsync(newOrderItem);
+            }
+
+            return new SuccessResult("Sipariş başarıyla güncellendi.");
         }
+
         public async Task<IResult> DeleteOrderAsync(int orderId)
         {
             var order = await _orderDal.GetAsync(o => o.Id == orderId);

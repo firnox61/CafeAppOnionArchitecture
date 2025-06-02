@@ -25,9 +25,9 @@ namespace Cafe.Infrastructure.Persistence.Repositories.EntityFramework
         public async Task<Order?> GetOrderWithDetailsAsync(int id)
         {
             return await _context.Orders
-                .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Product)
                 .Include(o => o.Table)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product) // ✅ ürün bilgileri gelsin diye şart
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
         public async Task<Order?> GetWithItemsAsync(int orderId)

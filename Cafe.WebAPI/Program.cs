@@ -5,7 +5,6 @@ using Cafe.Application.MappingProfiles;
 using Cafe.WebAPI.DependencyInjection;
 using Cafe.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Cafe.Infrastructure.IoC;
 using Cafe.Infrastructure.Security.Encryption;

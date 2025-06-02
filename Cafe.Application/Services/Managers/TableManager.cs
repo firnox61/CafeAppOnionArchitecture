@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cafe.Application.Abstraction;
 using Cafe.Application.DTOs.Orders;
 using Cafe.Application.DTOs.Tables;
 using Cafe.Application.Interfaces.Services.Contracts;
@@ -35,9 +36,22 @@ namespace Cafe.Application.Services.Managers
 
         public async Task<IResult> Delete(int id)
         {
-            var result = await _tableDal.GetAsync(t => t.Id == id);
+            var result = await _tableDal.GetWithOrdersByIdAsync(id); // Include'lu çağır
+            if (result == null)
+                return new ErrorResult("Masa bulunamadı.");
+
+            // sadece unpaid siparişleri filtrele
+            result.Orders = result.Orders
+                .Where(o => !o.IsPaid)
+                .ToList();
+
+            var dto = _mapper.Map<TableGetDto>(result);
+
+            if (dto.ActiveOrders.Any())
+                return new ErrorResult("Masada aktif (ödenmemiş) sipariş var, silinemez.");
+
             await _tableDal.DeleteAsync(result);
-            return new SuccessResult();
+            return new SuccessResult("Masa silindi.");
         }
         // [CacheAspect]
         public async Task<IDataResult<List<TableGetDto>>> GetAllAsync()
@@ -64,14 +78,19 @@ namespace Cafe.Application.Services.Managers
 
         public async Task<IDataResult<TableGetDto?>> GetById(int id)
         {
-
-
-
             var table = await _tableDal.GetWithOrdersByIdAsync(id);
+
             if (table == null)
                 return new ErrorDataResult<TableGetDto?>("Masa bulunamadı.");
 
+            // ❗ Sadece ödenmemiş siparişleri ayıkla
+            table.Orders = table.Orders
+                .Where(o => !o.IsPaid)
+                .ToList();
+
+            // ✅ AutoMapper ile eşleştir
             var dto = _mapper.Map<TableGetDto>(table);
+
             return new SuccessDataResult<TableGetDto?>(dto);
         }
 

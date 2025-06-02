@@ -52,14 +52,15 @@ namespace Cafe.WebAPI.DependencyInjection
             builder.RegisterType<EfProductIngredientDal>().As<IProductIngredientDal>().InstancePerLifetimeScope();
 
             builder.RegisterType<EfProductionHistoryDal>().As<IProductionHistoryDal>().InstancePerLifetimeScope();
-
-            // builder.RegisterType<UserManager>().As<IUserService>();
+            builder.RegisterType<AuthManager>().As<IAuthService>();
+          //  builder.RegisterType<EfUserDal>().As<IUserDal>();
+            builder.RegisterType<UserManager>().As<IUserService>();
             builder.RegisterType<EfUserDal>().As<IUserDal>();
 
-            // builder.RegisterType<UserOperationClaimManager>().As<IUserOperationClaimService>();
+             builder.RegisterType<UserOperationClaimManager>().As<IUserOperationClaimService>();
             builder.RegisterType<EfUserOperationClaimDal>().As<IUserOperationClaimDal>();
 
-            //  builder.RegisterType<OperationClaimManager>().As<IOperationClaimService>();
+              builder.RegisterType<OperationClaimManager>().As<IOperationClaimService>();
             builder.RegisterType<EfOperationClaimDal>().As<IOperationClaimDal>();
 
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();

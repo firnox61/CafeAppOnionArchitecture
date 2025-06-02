@@ -29,26 +29,24 @@ namespace Cafe.WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> Update(Order order)
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromBody] OrderUpdateDto orderUpdateDto)
         {
-            var result = await _orderService.Update(order);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            var result = await _orderService.Update(orderUpdateDto);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
         }
 
-        [HttpPost("delete")]
-        public async Task<IActionResult> Delete(Order order)
+        [HttpDelete("delete/{orderId}")]
+        public async Task<IActionResult> Delete(int orderId)
         {
-            var result = await _orderService.Delete(order);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            var result = await _orderService.DeleteOrderAsync(orderId);
+            if (!result.Success)
+                return BadRequest(new { message = result.Message });
+
+            return Ok(new { message = result.Message });
         }
 
         [HttpGet("getall")]
@@ -72,12 +70,7 @@ namespace Cafe.WebAPI.Controllers
             }
             return BadRequest(result);
         }
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var result = await _orderService.DeleteOrderAsync(id);
-            return result.Success ? Ok(result) : BadRequest(result);
-        }
+     
 
     }
 }

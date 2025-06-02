@@ -29,11 +29,31 @@ namespace Cafe.Application.Services.Managers
         //  [CacheRemoveAspect("CafeApp.Business.Concrete.IngredientManager.GetAllAsync")]
         public async Task<IResult> Add(IngredientCreateDto ingredientCreateDto)
         {
+            // Saf ekleme — yalnızca yeni kayıt
+            var existingIngredient = await _ingredientDal.GetAsync(i => i.Name.ToLower() == ingredientCreateDto.Name.ToLower());
+            if (existingIngredient != null)
+                return new ErrorResult("Bu malzeme zaten var. Lütfen stok artırmak için ilgili işlemi kullanın.");
+
+
             var newIngredient = _mapper.Map<Ingredient>(ingredientCreateDto);
             await _ingredientDal.AddAsync(newIngredient);
             return new SuccessResult();
         }
+        public async Task<IResult> IncreaseStockAsync(int ingredientId, int quantityToAdd)
+        {
+            var ingredient = await _ingredientDal.GetAsync(i => i.Id == ingredientId);
 
+            if (ingredient == null)
+                return new ErrorResult("Malzeme bulunamadı.");
+
+            if (quantityToAdd <= 0)
+                return new ErrorResult("Eklenecek miktar 0'dan büyük olmalıdır.");
+
+            ingredient.Stock += quantityToAdd;
+            await _ingredientDal.UpdateAsync(ingredient);
+
+            return new SuccessResult("Malzeme stoğu güncellendi.");
+        }
         public async Task<IResult> Delete(int ingredientId)
         {
             var ingredient = await _ingredientDal.GetAsync(p => p.Id == ingredientId);
@@ -57,8 +77,12 @@ namespace Cafe.Application.Services.Managers
 
         public async Task<IDataResult<Ingredient?>> GetById(int id)
         {
-
-            return new SuccessDataResult<Ingredient?>(await _ingredientDal.GetAsync(i => i.Id == id));
+            var Existingredient = await _ingredientDal.GetAsync(i => i.Id == id);
+            if (Existingredient == null)
+            {
+                return new ErrorDataResult<Ingredient?>("Malzeme bulunamadı");
+            }
+            return new SuccessDataResult<Ingredient?>(Existingredient);
         }
 
         public async Task<IResult> Update(IngredientUpdateDto ingredientUpdateDto)

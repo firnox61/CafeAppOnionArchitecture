@@ -45,6 +45,11 @@ namespace Cafe.Application.Services.Managers
         {
             var limit = DateTime.Today.AddDays(-30);
             var result = await _dailySalesSummaryDal.GetAllAsync(s => s.Date >= limit);
+            if(result==null)
+            {
+                return new SuccessDataResult<List<DailySalesSummary>>("Satış yapılmadı");
+
+            }
             return new SuccessDataResult<List<DailySalesSummary>>(result);
         }
     }

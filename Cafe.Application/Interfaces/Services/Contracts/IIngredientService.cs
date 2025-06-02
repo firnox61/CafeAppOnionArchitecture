@@ -14,6 +14,7 @@ namespace Cafe.Application.Interfaces.Services.Contracts
         Task<IDataResult<List<IngredientDto>>> GetAllAsync();
         Task<IDataResult<Ingredient?>> GetById(int id);
         Task<IResult> Add(IngredientCreateDto ingredientCreateDto);
+        Task<IResult> IncreaseStockAsync(int ingredientId, int quantityToAdd);
         Task<IResult> Update(IngredientUpdateDto ingredientUpdateDto);
         Task<IResult> Delete(int ingredientId);
         Task<IDataResult<List<StockAlertDto>>> GetCriticalStockIngredientsAsync();
