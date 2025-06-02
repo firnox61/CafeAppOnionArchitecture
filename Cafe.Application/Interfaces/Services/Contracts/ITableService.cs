@@ -15,5 +15,7 @@ namespace Cafe.Application.Interfaces.Services.Contracts
         Task<IResult> Add(TableCreateDto tableCreateDto);
         Task<IResult> Update(TableUpdateDto tableUpdateDto);
         Task<IResult> Delete(int id);
+        Task<IDataResult<List<TableGetDto>>> SearchTablesAsync(string keyword);
+        Task<IDataResult<List<TableGetDto>>> GetEmptyTablesAsync();
     }
 }

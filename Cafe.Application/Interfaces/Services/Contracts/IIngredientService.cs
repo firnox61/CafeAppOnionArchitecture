@@ -18,5 +18,6 @@ namespace Cafe.Application.Interfaces.Services.Contracts
         Task<IResult> Update(IngredientUpdateDto ingredientUpdateDto);
         Task<IResult> Delete(int ingredientId);
         Task<IDataResult<List<StockAlertDto>>> GetCriticalStockIngredientsAsync();
+        Task<IDataResult<List<IngredientDto>>> SearchIngredientsAsync(string keyword);
     }
 }

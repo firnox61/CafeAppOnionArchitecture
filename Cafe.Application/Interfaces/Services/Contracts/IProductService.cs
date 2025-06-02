@@ -1,4 +1,5 @@
-﻿using Cafe.Application.DTOs.Products;
+﻿using Cafe.Application.DTOs.ProductIngredients;
+using Cafe.Application.DTOs.Products;
 using Cafe.Application.Utilities.Results;
 using Cafe.Domain.Entities;
 using System;
@@ -19,5 +20,7 @@ namespace Cafe.Application.Interfaces.Services.Contracts
         Task<IDataResult<List<ProductProductionReportDto>>> GetMostProducedProductsAsync();
         Task<IDataResult<List<ProductProductionHistoryDto>>> GetProductionHistoryReportAsync();
         Task<IResult> ProduceProduct(int productId, int quantity);
+        Task<IDataResult<List<ProductGetDto>>> SearchProductsAsync(string keyword);
+        Task<IDataResult<List<ProductIngredientDto>>> GetProductRecipeAsync(int productId);
     }
 }

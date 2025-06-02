@@ -3,6 +3,7 @@ using Cafe.Application.DTOs.Ingredients;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
 using Cafe.Application.Utilities.Results;
+using Cafe.Application.Validators.Ingredients;
 using Cafe.Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -24,7 +25,7 @@ namespace Cafe.Application.Services.Managers
             _mapper = mapper;
         }
         // [CacheRemoveAspect("ITableService.Get")]
-        //  [ValidationAspect(typeof(IngredientCreateDtoValidator))]
+          [ValidationAspect(typeof(IngredientCreateDtoValidator))]
         //    [LogAspect(typeof(FileLogger))] // opsiyonel: loglama da ekli
         //  [CacheRemoveAspect("CafeApp.Business.Concrete.IngredientManager.GetAllAsync")]
         public async Task<IResult> Add(IngredientCreateDto ingredientCreateDto)
@@ -112,5 +113,24 @@ namespace Cafe.Application.Services.Managers
 
             return new SuccessDataResult<List<StockAlertDto>>(dtoList, "Kritik seviyenin altına düşen malzemeler");
         }
+        public async Task<IDataResult<List<IngredientDto>>> SearchIngredientsAsync(string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return new ErrorDataResult<List<IngredientDto>>("Arama kelimesi boş olamaz.");
+            }
+
+            var results = await _ingredientDal.GetAllAsync(i =>
+                i.Name.ToLower().Contains(keyword.ToLower()));
+
+            if (results == null || !results.Any())
+            {
+                return new SuccessDataResult<List<IngredientDto>>(new List<IngredientDto>(), "Eşleşen malzeme bulunamadı.");
+            }
+
+            var dtoList = _mapper.Map<List<IngredientDto>>(results);
+            return new SuccessDataResult<List<IngredientDto>>(dtoList);
+        }
+
     }
 }

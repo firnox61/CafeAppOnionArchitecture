@@ -69,5 +69,23 @@ namespace Cafe.WebAPI.Controllers
             }
             return BadRequest(result);
         }
+        // 🔍 Masa arama
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchTables([FromQuery] string keyword)
+        {
+            var result = await _tableService.SearchTablesAsync(keyword);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        // 📋 Boş masaları getir
+        [HttpGet("empty")]
+        public async Task<IActionResult> GetEmptyTables()
+        {
+            var result = await _tableService.GetEmptyTablesAsync();
+            return Ok(result);
+        }
     }
 }

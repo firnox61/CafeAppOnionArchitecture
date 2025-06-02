@@ -107,5 +107,29 @@ namespace Cafe.Application.Services.Managers
             await _tableDal.UpdateAsync(existtTable);
             return new SuccessResult();
         }
+        public async Task<IDataResult<List<TableGetDto>>> SearchTablesAsync(string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword))
+                return new ErrorDataResult<List<TableGetDto>>("Arama terimi boş olamaz.");
+
+            var tables = await _tableDal.GetAllWithOrdersAsync();
+            var filtered = tables
+                .Where(t => t.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                .Select(t => _mapper.Map<TableGetDto>(t))
+                .ToList();
+
+            return new SuccessDataResult<List<TableGetDto>>(filtered);
+        }
+        public async Task<IDataResult<List<TableGetDto>>> GetEmptyTablesAsync()
+        {
+            var tables = await _tableDal.GetAllWithOrdersAsync();
+            var emptyTables = tables
+                .Where(t => t.Orders.All(o => o.IsPaid))
+                .Select(t => _mapper.Map<TableGetDto>(t))
+                .ToList();
+
+            return new SuccessDataResult<List<TableGetDto>>(emptyTables);
+        }
+
     }
 }

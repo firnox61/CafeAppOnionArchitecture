@@ -15,5 +15,6 @@ namespace Cafe.Application.Repositories
         Task<List<ProductIngredientGetDto>> GetAllWithDetailsAsync();
         Task<ProductIngredientGetDto?> GetByIdWithDetailsAsync(int ingredientId);
         Task<List<ProductIngredient>> GetAllWithProductAndIngredientAsync();
+        Task<List<ProductIngredient>> GetAllWithIngredientAsync(int productId);
     }
 }

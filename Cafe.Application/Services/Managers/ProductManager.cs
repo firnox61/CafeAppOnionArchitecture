@@ -103,8 +103,32 @@ namespace Cafe.Application.Services.Managers
             return new SuccessResult("Ürün ve malzemeleri başarıyla eklendi.");
         }
 
+        public async Task<IDataResult<List<ProductGetDto>>> SearchProductsAsync(string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword))
+                return new ErrorDataResult<List<ProductGetDto>>("Arama terimi boş olamaz.");
 
+            var allProducts = await _productDal.GetProductDetailsAsync();
+            var matches = allProducts
+                .Where(p => p.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+                            (!string.IsNullOrWhiteSpace(p.Description) && p.Description.Contains(keyword, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
 
+            if (!matches.Any())
+                return new SuccessDataResult<List<ProductGetDto>>(new List<ProductGetDto>(), "Eşleşen ürün bulunamadı.");
+
+            return new SuccessDataResult<List<ProductGetDto>>(matches);
+        }
+
+        public async Task<IDataResult<List<ProductIngredientDto>>> GetProductRecipeAsync(int productId)
+        {
+            var ingredients = await _productIngredientDal.GetAllWithIngredientAsync(productId); // Özel metot: Ingredient join'li çekiyor varsayalım
+            if (ingredients == null || !ingredients.Any())
+                return new SuccessDataResult<List<ProductIngredientDto>>(new List<ProductIngredientDto>(), "Reçete bulunamadı.");
+
+            var dtoList = _mapper.Map<List<ProductIngredientDto>>(ingredients);
+            return new SuccessDataResult<List<ProductIngredientDto>>(dtoList);
+        }
 
         public async Task<IResult> Delete(int productId)
         {

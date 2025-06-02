@@ -57,5 +57,12 @@ namespace Cafe.Infrastructure.Persistence.Repositories.EntityFramework
                 .Include(pi => pi.Ingredient)
                 .ToListAsync();
         }
+        public async Task<List<ProductIngredient>> GetAllWithIngredientAsync(int productId)
+        {
+            return await _context.ProductIngredients
+                .Include(pi => pi.Ingredient)
+                .Where(pi => pi.ProductId == productId)
+                .ToListAsync();
+        }
     }
 }

@@ -20,8 +20,8 @@ namespace Cafe.Infrastructure.Aspects.Interceptors
             var methodAttributes = type.GetMethod(method.Name)//metotların atributlarına bak
                 .GetCustomAttributes<MethodInterceptionBaseAttribute>(true);
             classAttributes.AddRange(methodAttributes);
-          //  classAttributes.Add(new LogAspect { Priority = 99 });//Log
-          //  classAttributes.Add(new PerformanceAspect(3) { Priority = 98 });//performance
+            classAttributes.Add(new LogAspect { Priority = 99 });//Log
+            classAttributes.Add(new PerformanceAspect(3) { Priority = 98 });//performance
             //diğerlerini eklemiyorum metotların üstüne eklemek daha sağlıklı
 
             //   classAttributes.Add(new ExceptionLogAspect(typeof(FileLogger))); sisteme loglama ekleseydik kullanacağımız şey  ototmatik olarak tüm metotları loga dahil et demek

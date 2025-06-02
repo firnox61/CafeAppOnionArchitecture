@@ -109,7 +109,27 @@ namespace Cafe.WebAPI.Controllers
         }
 
 
+        // 🔍 Ürün arama
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProducts([FromQuery] string keyword)
+        {
+            var result = await _productService.SearchProductsAsync(keyword);
+            if (!result.Success)
+                return BadRequest(result);
 
+            return Ok(result);
+        }
+
+        // 📋 Ürün reçetesi (malzeme listesi)
+        [HttpGet("{id}/recipe")]
+        public async Task<IActionResult> GetProductRecipe(int id)
+        {
+            var result = await _productService.GetProductRecipeAsync(id);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
 
 
 

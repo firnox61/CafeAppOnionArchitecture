@@ -88,5 +88,14 @@ namespace Cafe.WebAPI.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchIngredients([FromQuery] string keyword)
+        {
+            var result = await _ingredientService.SearchIngredientsAsync(keyword);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }
