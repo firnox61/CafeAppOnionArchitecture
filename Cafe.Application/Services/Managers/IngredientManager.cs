@@ -21,16 +21,16 @@ namespace Cafe.Application.Services.Managers
         }
         // [CacheRemoveAspect("ITableService.Get")]
 
-        //    [LogAspect(typeof(FileLogger))] // opsiyonel: loglama da ekli
+           // [LogAspect(typeof(FileLogger))] // opsiyonel: loglama da ekli
         //  [CacheRemoveAspect("CafeApp.Business.Concrete.IngredientManager.GetAllAsync")]
         [ValidationAspect(typeof(IngredientCreateDtoValidator))]
-        public async Task<IResult> Add(IngredientCreateDto ingredientCreateDto)
+        public virtual async Task<IResult> Add(IngredientCreateDto ingredientCreateDto)
         {
             // Saf ekleme — yalnızca yeni kayıt
-            var existingIngredient = await _ingredientDal.GetAsync(i => i.Name.ToLower() == ingredientCreateDto.Name.ToLower());
+            /*var existingIngredient = await _ingredientDal.GetAsync(i => i.Name.ToLower() == ingredientCreateDto.Name.ToLower());
             if (existingIngredient != null)
                 return new ErrorResult("Bu malzeme zaten var. Lütfen stok artırmak için ilgili işlemi kullanın.");
-
+            */
 
             var newIngredient = _mapper.Map<Ingredient>(ingredientCreateDto);
             await _ingredientDal.AddAsync(newIngredient);

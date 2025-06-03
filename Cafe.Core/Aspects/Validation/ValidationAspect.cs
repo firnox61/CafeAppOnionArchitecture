@@ -2,11 +2,14 @@
 using Cafe.Core.Utilities.Validation;
 using Castle.DynamicProxy;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace Cafe.Core.Aspects.Validation
 {
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
     public class ValidationAspect : MethodInterception
     {
+        
         private readonly Type _validatorType;
 
         public ValidationAspect(Type validatorType)
@@ -21,18 +24,28 @@ namespace Cafe.Core.Aspects.Validation
 
         protected override void OnBefore(IInvocation invocation)
         {
-            var validator = (IValidator)Activator.CreateInstance(_validatorType)!;
+            Console.WriteLine("🚨 ValidationAspect çalıştı!");
+
+            var validatorInstance = (IValidator)Activator.CreateInstance(_validatorType)!;
             var entityType = _validatorType.BaseType!.GetGenericArguments()[0];
 
             var entities = invocation.Arguments
-                .Where(arg => arg != null && entityType.IsAssignableFrom(arg.GetType()))
-                .ToList();
+                .Where(arg => arg != null && arg.GetType() == entityType);
 
             foreach (var entity in entities)
             {
-                ValidationTool.Validate(validator, entity);
+                var context = new ValidationContext<object>(entity);
+                var result = validatorInstance.Validate(context);
+
+                if (!result.IsValid)
+                {
+                    throw new ValidationException(result.Errors);
+                }
             }
         }
+
+
+
     }
 
 }

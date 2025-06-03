@@ -18,7 +18,7 @@ namespace Cafe.WebAPI.DependencyInjection
     {
         protected override void Load(ContainerBuilder builder)
         {
-           // builder.RegisterType<IngredientManager>().As<IIngredientService>().InstancePerLifetimeScope();
+            builder.RegisterType<IngredientManager>().As<IIngredientService>().InstancePerLifetimeScope();
             builder.RegisterType<EfIngredientDal>().As<IIngredientDal>().InstancePerLifetimeScope();
 
 
@@ -63,17 +63,24 @@ namespace Cafe.WebAPI.DependencyInjection
             builder.RegisterType<HashingService>().As<IHashingService>();
 
 
-            var managerAssembly = typeof(IngredientManager).Assembly; // En net yol
-            var coreAssembly = typeof(ValidationAspect).Assembly;
-            var infrastructureAssembly = typeof(AspectInterceptorSelector).Assembly;
+              var managerAssembly = typeof(IngredientManager).Assembly; // En net yol
+              var coreAssembly = typeof(ValidationAspect).Assembly;
+              var infrastructureAssembly = typeof(AspectInterceptorSelector).Assembly;
 
-            builder.RegisterAssemblyTypes(managerAssembly, coreAssembly, infrastructureAssembly)
-                .AsImplementedInterfaces()
-                .EnableInterfaceInterceptors(new ProxyGenerationOptions
-                {
-                    Selector = new AspectInterceptorSelector()
-                })
-                .InstancePerLifetimeScope();
+              builder.RegisterAssemblyTypes(managerAssembly, coreAssembly, infrastructureAssembly)
+                  .AsImplementedInterfaces()
+                  .EnableInterfaceInterceptors(new ProxyGenerationOptions
+                  {
+                      Selector = new AspectInterceptorSelector()
+                  })
+                  .InstancePerLifetimeScope();
+            /*builder.RegisterType<IngredientManager>()
+      .As<IIngredientService>()
+      .EnableInterfaceInterceptors(new ProxyGenerationOptions
+      {
+          Selector = new AspectInterceptorSelector()
+      })
+      .InstancePerLifetimeScope();*/
 
 
 

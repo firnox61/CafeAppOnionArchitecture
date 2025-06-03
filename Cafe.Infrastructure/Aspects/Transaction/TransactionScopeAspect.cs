@@ -6,22 +6,31 @@ namespace Cafe.Infrastructure.Aspects.Transaction
 {
     public class TransactionScopeAspect : MethodInterception
     {
-        public override async Task InterceptAsync(IInvocation invocation)
+        public override void InterceptAsynchronous(IInvocation invocation)
+        {
+            invocation.ReturnValue = InterceptAsyncInternal(invocation);
+        }
+
+        public override void InterceptAsynchronous<TResult>(IInvocation invocation)
+        {
+            invocation.ReturnValue = InterceptAsyncInternal(invocation);
+        }
+
+        private async Task InterceptAsyncInternal(IInvocation invocation)
         {
             using (var transactionScope = new TransactionScope(
-                TransactionScopeAsyncFlowOption.Enabled)) // 🔥 async desteği açık
+                TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    await invocation.ProceedAsync(); // ✅ metodu async şekilde çalıştır
-                    transactionScope.Complete(); // başarılıysa commit
+                    await invocation.ProceedAsync(); // async metodu çalıştır
+                    transactionScope.Complete(); // commit
                 }
-                catch (Exception)
+                catch
                 {
-                    // rollback otomatik, dispose yeterli
-                    throw;
+                    throw; // rollback otomatik
                 }
-            }//[TransactionScopeAspect] ekleencek
+            }
         }
     }
 }

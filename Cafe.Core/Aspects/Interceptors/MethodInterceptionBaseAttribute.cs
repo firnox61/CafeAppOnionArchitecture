@@ -5,30 +5,29 @@ namespace Cafe.Core.Aspects.Interceptors
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public abstract class MethodInterceptionBaseAttribute : Attribute, IInterceptor, IAsyncInterceptor
     {
-        public int Priority { get; set; }//öncelik hangisiçalışsın önce loglama veya authorize
+        public int Priority { get; set; }
 
-        public virtual void Intercept(IInvocation invocation)
-        {
+        public virtual void Intercept(IInvocation invocation) { }
 
-        }
-        public virtual async Task InterceptAsync(IInvocation invocation)
+        public virtual void InterceptSynchronous(IInvocation invocation)
         {
-            Intercept(invocation); // fallback
+            Intercept(invocation);
         }
 
-        public void InterceptAsynchronous(IInvocation invocation)
+        public virtual void InterceptAsynchronous(IInvocation invocation)
         {
-            InterceptAsync(invocation).Wait();
+            InterceptAsyncInternal(invocation).GetAwaiter().GetResult();
         }
 
-        public void InterceptAsynchronous<TResult>(IInvocation invocation)
+        public virtual void InterceptAsynchronous<TResult>(IInvocation invocation)
         {
-            InterceptAsync(invocation).Wait();
+            InterceptAsyncInternal(invocation).GetAwaiter().GetResult();
         }
 
-        public void InterceptSynchronous(IInvocation invocation)
+        private async Task InterceptAsyncInternal(IInvocation invocation)
         {
             Intercept(invocation);
         }
     }
+
 }

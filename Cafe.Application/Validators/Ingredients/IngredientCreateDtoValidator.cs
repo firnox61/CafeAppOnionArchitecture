@@ -5,6 +5,8 @@ namespace Cafe.Application.Validators.Ingredients
 {
     public class IngredientCreateDtoValidator : AbstractValidator<IngredientCreateDto>
     {
+      
+
         public IngredientCreateDtoValidator()
         {
             RuleFor(i => i.Name)

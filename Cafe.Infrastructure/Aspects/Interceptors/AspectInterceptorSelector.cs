@@ -10,18 +10,34 @@ namespace Cafe.Infrastructure.Aspects.Interceptors
     {
         public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
         {
-            var classAttributes = type.GetCustomAttributes<MethodInterceptionBaseAttribute>//clasın attributlarına bak
-                (true).ToList();
-            var methodAttributes = type.GetMethod(method.Name)//metotların atributlarına bak
-                .GetCustomAttributes<MethodInterceptionBaseAttribute>(true);
-            classAttributes.AddRange(methodAttributes);
-         //   classAttributes.Add(new LogAspect { Priority = 99 });//Log
-         //   classAttributes.Add(new PerformanceAspect(3) { Priority = 98 });//performance
-            //diğerlerini eklemiyorum metotların üstüne eklemek daha sağlıklı
+            var classAttributes = type.GetCustomAttributes<MethodInterceptionBaseAttribute>(true).ToList();
 
-            //   classAttributes.Add(new ExceptionLogAspect(typeof(FileLogger))); sisteme loglama ekleseydik kullanacağımız şey  ototmatik olarak tüm metotları loga dahil et demek
-            //buraya yine bu şekilde performance işini ekleyebilirdik ve bu tüm sistemi performanc eder
-            return classAttributes.OrderBy(x => x.Priority).ToArray();//önceliklerine bak
+            // method base class'da mı? Eğer interface metodunu aldıysan, class'taki karşılığını bul
+            var targetMethod = type.GetMethod(method.Name, method.GetParameters().Select(p => p.ParameterType).ToArray());
+
+            var methodAttributes = targetMethod != null
+                ? targetMethod.GetCustomAttributes<MethodInterceptionBaseAttribute>(true)
+                : Enumerable.Empty<MethodInterceptionBaseAttribute>();
+
+            Console.WriteLine("🎯 Class Attributes:");
+            foreach (var attr in classAttributes)
+                Console.WriteLine($" - {attr.GetType().Name}");
+
+            Console.WriteLine("🎯 Method Attributes:");
+            foreach (var attr in methodAttributes)
+                Console.WriteLine($" - {attr.GetType().Name}");
+
+            classAttributes.AddRange(methodAttributes);
+
+            classAttributes.Add(new LogAspect { Priority = 99 });
+            classAttributes.Add(new PerformanceAspect(3) { Priority = 98 });
+
+            return classAttributes
+                .OrderBy(x => x.Priority)
+                .Cast<IInterceptor>()
+                .ToArray();
         }
+
     }
+
 }

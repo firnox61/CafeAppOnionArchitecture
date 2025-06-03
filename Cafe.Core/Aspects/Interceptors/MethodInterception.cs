@@ -7,24 +7,14 @@ namespace Cafe.Core.Aspects.Interceptors
         protected virtual void OnAfter(IInvocation invocation) { }
         protected virtual void OnException(IInvocation invocation, Exception e) { }
         protected virtual void OnSuccess(IInvocation invocation) { }
-        public override void Intercept(IInvocation invocation)
-        {// public override void Intercept(IInvocation invocation) bu kısım aslında metotlar mesela
-         // add metodu Onbeforenin içini doldurup ilk çalışanların neler yapacağını belirteceiğiz
-            var isAsync = typeof(Task).IsAssignableFrom(invocation.Method.ReturnType);
 
+        public override void Intercept(IInvocation invocation)
+        {
             var isSuccess = true;
             OnBefore(invocation);
-
             try
             {
-                if (isAsync)
-                {
-                    invocation.ReturnValue = InterceptAsyncInternal(invocation);
-                }
-                else
-                {
-                    invocation.Proceed();
-                }
+                invocation.Proceed();
             }
             catch (Exception e)
             {
@@ -32,32 +22,42 @@ namespace Cafe.Core.Aspects.Interceptors
                 OnException(invocation, e);
                 throw;
             }
-
-            if (isSuccess && !isAsync)
+            finally
             {
-                OnSuccess(invocation);
+                if (isSuccess) OnSuccess(invocation);
                 OnAfter(invocation);
             }
         }
 
+        public override void InterceptAsynchronous(IInvocation invocation)
+        {
+            invocation.ReturnValue = InterceptAsyncInternal(invocation);
+        }
+
+        public override void InterceptAsynchronous<TResult>(IInvocation invocation)
+        {
+            invocation.ReturnValue = InterceptAsyncInternal(invocation);
+        }
+
         private async Task InterceptAsyncInternal(IInvocation invocation)
         {
+            var isSuccess = true;
+            OnBefore(invocation);
             try
             {
                 await invocation.ProceedAsync();
-                OnSuccess(invocation);
             }
             catch (Exception e)
             {
+                isSuccess = false;
                 OnException(invocation, e);
                 throw;
             }
             finally
             {
+                if (isSuccess) OnSuccess(invocation);
                 OnAfter(invocation);
             }
         }
     }
-
-    }
-
+}
