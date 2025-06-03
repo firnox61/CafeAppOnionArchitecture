@@ -2,12 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Cafe.Infrastructure.Persistence.Context
 {
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DataContext>

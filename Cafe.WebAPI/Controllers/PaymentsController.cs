@@ -2,7 +2,6 @@
 using Cafe.Application.DTOs.Payments;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cafe.WebAPI.Controllers

@@ -3,13 +3,10 @@ using Cafe.Application.DTOs.Users;
 using Cafe.Application.Interfaces.Security;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
+using Cafe.Application.Validators.Users;
+using Cafe.Core.Aspects.Validation;
+using Cafe.Core.Utilities.Results;
 using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -25,6 +22,7 @@ namespace Cafe.Application.Services.Managers
             _mapper = mapper;
             _hashingService = hashingService;
         }
+        [ValidationAspect(typeof(UserDtoValidator))]
         public async Task<IResult> EditProfil(UserDto userDto, string password)
         {
             byte[] passwordHash, passwordSalt;
@@ -37,6 +35,7 @@ namespace Cafe.Application.Services.Managers
             await _userDal.UpdateAsync(user);
             return new SuccessResult("Müşteri bilgileri güncellendi");
         }
+        [ValidationAspect(typeof(UserCreateDtoValidator))]
         public async Task<IResult> AddAsync(UserCreateDto dto)
         {
             var user = _mapper.Map<User>(dto);
@@ -85,7 +84,7 @@ namespace Cafe.Application.Services.Managers
             var claims = await _userDal.GetClaimsAsync(user); // DAL'de bu olmalı
             return new SuccessDataResult<List<OperationClaim>>(claims);
         }
-
+        [ValidationAspect(typeof(UserUpdateDtoValidator))]
         public async Task<IResult> UpdateAsync(UserUpdateDto dto)
         {
             var user = await _userDal.GetAsync(u => u.Id == dto.Id);

@@ -1,10 +1,6 @@
 ﻿using Cafe.Application.Interfaces.Services.Contracts;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
 
 namespace Cafe.Application.Services.Managers
 {

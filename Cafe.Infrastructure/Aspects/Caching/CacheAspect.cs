@@ -1,13 +1,8 @@
-﻿using Cafe.Infrastructure.Aspects.Interceptors;
+﻿using Cafe.Core.Aspects.Interceptors;
 using Cafe.Infrastructure.Caching;
 using Cafe.Infrastructure.IoC;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Infrastructure.Aspects.Caching
 {

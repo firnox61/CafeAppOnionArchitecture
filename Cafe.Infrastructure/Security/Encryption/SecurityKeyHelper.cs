@@ -1,9 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Infrastructure.Security.Encryption
 {//vereceğimiz şifreyi token jsonunn anlayabileceği hale getirmek için yapıyrouz byte array hale getiriyo

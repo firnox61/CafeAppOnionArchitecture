@@ -1,10 +1,5 @@
-﻿using Cafe.Infrastructure.Aspects.Interceptors;
+﻿using Cafe.Core.Aspects.Interceptors;
 using Castle.DynamicProxy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
 
 namespace Cafe.Infrastructure.Aspects.Transaction

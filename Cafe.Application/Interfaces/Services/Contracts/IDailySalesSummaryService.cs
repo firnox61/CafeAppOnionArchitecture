@@ -1,10 +1,5 @@
-﻿using Cafe.Application.Utilities.Results;
-using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cafe.Domain.Entities;
+using Cafe.Core.Utilities.Results;
 
 namespace Cafe.Application.Interfaces.Services.Contracts
 {

@@ -2,13 +2,10 @@
 using Cafe.Application.DTOs.Users;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
 using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
+using Cafe.Core.Aspects.Validation;
+using Cafe.Application.Validators.Users;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -39,14 +36,14 @@ namespace Cafe.Application.Services.Managers
             var dto = _mapper.Map<OperationClaimListDto>(entity);
             return new SuccessDataResult<OperationClaimListDto>(dto);
         }
-
+        [ValidationAspect(typeof(OperationClaimCreateDtoValidator))]
         public async Task<IResult> AddAsync(OperationClaimCreateDto dto)
         {
             var entity = _mapper.Map<OperationClaim>(dto);
             await _operationClaimDal.AddAsync(entity);
             return new SuccessResult("Rol eklendi");
         }
-
+        [ValidationAspect(typeof(OperationClaimUpdateDtoValidator))]
         public async Task<IResult> UpdateAsync(OperationClaimUpdateDto dto)
         {
             var entity = await _operationClaimDal.GetAsync(x => x.Id == dto.Id);

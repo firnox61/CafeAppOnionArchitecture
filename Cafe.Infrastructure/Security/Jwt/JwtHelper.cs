@@ -12,15 +12,10 @@ using Cafe.Infrastructure.Security.Encryption;
 //using Castle.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 
 //using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Infrastructure.Security.Jwt
 {

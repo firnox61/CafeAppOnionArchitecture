@@ -1,10 +1,5 @@
-﻿using Cafe.Application.Abstraction;
-using Cafe.Application.DTOs.Orders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cafe.Application.DTOs.Orders;
+using Cafe.Core.Abstractions;
 
 namespace Cafe.Application.DTOs.Tables
 {

@@ -1,11 +1,6 @@
-﻿using Cafe.Application.Abstraction;
-using Cafe.Application.DTOs.ProductIngredients;
+﻿using Cafe.Application.DTOs.ProductIngredients;
+using Cafe.Core.Abstractions;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Application.DTOs.Products
 {

@@ -1,10 +1,5 @@
-﻿using Cafe.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Cafe.Core.Abstractions;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Application.Repositories
 {

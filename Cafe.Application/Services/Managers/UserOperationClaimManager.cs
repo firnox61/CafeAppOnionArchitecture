@@ -2,13 +2,10 @@
 using Cafe.Application.DTOs.Users;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
 using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
+using Cafe.Application.Validators.Users;
+using Cafe.Core.Aspects.Validation;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -22,6 +19,8 @@ namespace Cafe.Application.Services.Managers
             _userOperationClaimDal = userOperationClaimDal;
             _mapper = mapper;
         }
+
+        [ValidationAspect(typeof(UserOperationClaimCreateDtoValidator))]
         public async Task<IResult> AddAsync(UserOperationClaimCreateDto dto)
         {
             var entity = _mapper.Map<UserOperationClaim>(dto);

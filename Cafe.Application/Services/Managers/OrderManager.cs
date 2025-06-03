@@ -2,14 +2,10 @@
 using Cafe.Application.DTOs.Orders;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
-using Cafe.Domain;
 using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
+using Cafe.Core.Aspects.Validation;
+using Cafe.Application.Validators.Orders;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -30,7 +26,7 @@ namespace Cafe.Application.Services.Managers
             _orderItemDal = orderItemDal;
             _tableDal = tableDal;
         }
-
+        [ValidationAspect(typeof(OrderCreateDtoValidator))]
         public async Task<IResult> Add(OrderCreateDto orderCreateDto)
         {
             // ✅ TableId geçerli mi?
@@ -114,7 +110,7 @@ namespace Cafe.Application.Services.Managers
             var dto = _mapper.Map<OrderGetDto>(order);
             return new SuccessDataResult<OrderGetDto>(dto);
         }
-
+        [ValidationAspect(typeof(OrderUpdateDtoValidator))]
         public async Task<IResult> Update(OrderUpdateDto orderUpdateDto)
         {
             var existingOrder = await _orderDal.GetAsync(o => o.Id == orderUpdateDto.Id);

@@ -2,7 +2,6 @@
 using Cafe.Application.DTOs.Products;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Entities.DTOs.Products;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cafe.WebAPI.Controllers

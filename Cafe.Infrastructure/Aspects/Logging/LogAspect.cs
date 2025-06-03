@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Castle.DynamicProxy;
-
-using Cafe.Infrastructure.Aspects.Interceptors;
+﻿using Castle.DynamicProxy;
 using Cafe.Application.Interfaces.Logging;
+using Cafe.Core.Aspects.Interceptors;
 
 
 namespace Cafe.Infrastructure.Aspects.Logging

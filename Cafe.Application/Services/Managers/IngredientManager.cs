@@ -2,15 +2,10 @@
 using Cafe.Application.DTOs.Ingredients;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
 using Cafe.Application.Validators.Ingredients;
 using Cafe.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
+using Cafe.Core.Aspects.Validation;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -25,9 +20,10 @@ namespace Cafe.Application.Services.Managers
             _mapper = mapper;
         }
         // [CacheRemoveAspect("ITableService.Get")]
-          [ValidationAspect(typeof(IngredientCreateDtoValidator))]
+
         //    [LogAspect(typeof(FileLogger))] // opsiyonel: loglama da ekli
         //  [CacheRemoveAspect("CafeApp.Business.Concrete.IngredientManager.GetAllAsync")]
+        [ValidationAspect(typeof(IngredientCreateDtoValidator))]
         public async Task<IResult> Add(IngredientCreateDto ingredientCreateDto)
         {
             // Saf ekleme — yalnızca yeni kayıt

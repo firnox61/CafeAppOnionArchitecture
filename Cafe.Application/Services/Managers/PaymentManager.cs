@@ -2,13 +2,10 @@
 using Cafe.Application.DTOs.Payments;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
 using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
+using Cafe.Application.Validators.Payments;
+using Cafe.Core.Aspects.Validation;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -25,7 +22,7 @@ namespace Cafe.Application.Services.Managers
             _orderDal = orderDal;
             _dailySalesSummaryService = dailySalesSummaryService;
         }
-
+        [ValidationAspect(typeof(PaymentCreateDtoValidator))]
         public async Task<IResult> Add(PaymentCreateDto paymentCreateDto)
         {
             var order = await _orderDal.GetWithItemsAsync(paymentCreateDto.OrderId);
@@ -81,6 +78,7 @@ namespace Cafe.Application.Services.Managers
             var getPayment = _mapper.Map<PaymentGetDto>(payment);
             return new SuccessDataResult<PaymentGetDto?>(getPayment);
         }
+               
 
         public async Task<IResult> Update(Payment payment)
         {

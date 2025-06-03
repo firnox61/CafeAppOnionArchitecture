@@ -1,6 +1,6 @@
 ﻿using Castle.DynamicProxy;
 
-namespace Cafe.Infrastructure.Aspects.Interceptors
+namespace Cafe.Core.Aspects.Interceptors
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public abstract class MethodInterceptionBaseAttribute : Attribute, IInterceptor, IAsyncInterceptor

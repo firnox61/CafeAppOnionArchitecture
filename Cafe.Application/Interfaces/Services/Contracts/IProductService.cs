@@ -1,12 +1,6 @@
 ﻿using Cafe.Application.DTOs.ProductIngredients;
 using Cafe.Application.DTOs.Products;
-using Cafe.Application.Utilities.Results;
-using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
 
 namespace Cafe.Application.Interfaces.Services.Contracts
 {

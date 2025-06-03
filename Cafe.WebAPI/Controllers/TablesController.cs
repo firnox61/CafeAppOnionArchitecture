@@ -1,6 +1,5 @@
 ﻿using Cafe.Application.DTOs.Tables;
 using Cafe.Application.Interfaces.Services.Contracts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cafe.WebAPI.Controllers

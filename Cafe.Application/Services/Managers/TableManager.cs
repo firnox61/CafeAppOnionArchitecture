@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
-using Cafe.Application.Abstraction;
 using Cafe.Application.DTOs.Orders;
 using Cafe.Application.DTOs.Tables;
 using Cafe.Application.Interfaces.Services.Contracts;
 using Cafe.Application.Repositories;
-using Cafe.Application.Utilities.Results;
 using Cafe.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cafe.Core.Utilities.Results;
+using Cafe.Application.Validators.Tables;
+using Cafe.Core.Aspects.Validation;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -26,7 +22,7 @@ namespace Cafe.Application.Services.Managers
             _mapper = mapper;
         }
 
-
+        [ValidationAspect(typeof(TableCreateDtoValidator))]
         public async Task<IResult> Add(TableCreateDto tableCreateDto)
         {
             var newTable = _mapper.Map<Table>(tableCreateDto);
@@ -93,7 +89,7 @@ namespace Cafe.Application.Services.Managers
 
             return new SuccessDataResult<TableGetDto?>(dto);
         }
-
+        [ValidationAspect(typeof(TableUpdateDtoValidator))]
         public async Task<IResult> Update(TableUpdateDto tableUpdateDto)
         {
             var existtTable = await _tableDal.GetAsync(t => t.Id == tableUpdateDto.Id);
