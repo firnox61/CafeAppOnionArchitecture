@@ -1,4 +1,4 @@
-﻿using Cafe.Infrastructure.IoC;
+﻿using Cafe.Core.Utilities.IoC;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;

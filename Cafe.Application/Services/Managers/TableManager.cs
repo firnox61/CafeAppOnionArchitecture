@@ -119,9 +119,21 @@ namespace Cafe.Application.Services.Managers
         public async Task<IDataResult<List<TableGetDto>>> GetEmptyTablesAsync()
         {
             var tables = await _tableDal.GetAllWithOrdersAsync();
+
             var emptyTables = tables
-                .Where(t => t.Orders.All(o => o.IsPaid))
-                .Select(t => _mapper.Map<TableGetDto>(t))
+                .Where(t => !t.Orders.Any(o => !o.IsPaid)) // ✅ unpaid sipariş yoksa
+                .Select(t =>
+                {
+                    var dto = _mapper.Map<TableGetDto>(t);
+
+                    // Sadece unpaid siparişleri alalım (boş masa olduğundan bu zaten boş olacak ama DTO tutarlılığı için iyi)
+                    dto.ActiveOrders = t.Orders
+                        .Where(o => !o.IsPaid)
+                        .Select(o => _mapper.Map<OrderSummaryDto>(o))
+                        .ToList();
+
+                    return dto;
+                })
                 .ToList();
 
             return new SuccessDataResult<List<TableGetDto>>(emptyTables);

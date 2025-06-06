@@ -47,6 +47,9 @@ namespace Cafe.Application.Services.Managers
 
             await _paymentDal.AddAsync(payment);
             await _dailySalesSummaryService.UpdateDailySalesAsync(totalAmount, DateTime.Today);
+            //var existOrder= await _orderDal.GetAsync(o=>o.Id==payment.OrderId);
+            //existOrder.IsPaid=false;
+            //await _orderDal.DeleteAsync(existOrder);
 
             return new SuccessResult("Ödeme başarıyla tamamlandı.");
         }
@@ -55,9 +58,14 @@ namespace Cafe.Application.Services.Managers
 
 
 
-        public async Task<IResult> Delete(Payment payment)
+        public async Task<IResult> Delete(int id)
         {
-            await _paymentDal.DeleteAsync(payment);
+            var existPayment=await _paymentDal.GetAsync(p=>p.Id == id);
+            if (existPayment == null)
+            {
+                return new ErrorResult("Kayıtlı ödeme bulunamadı");
+            }
+            await _paymentDal.DeleteAsync(existPayment);
             return new SuccessResult();
         }
 
@@ -80,10 +88,17 @@ namespace Cafe.Application.Services.Managers
         }
                
 
-        public async Task<IResult> Update(Payment payment)
+        public async Task<IResult> Update(PaymentUpdateDto paymentUpdateDto)
         {
-            await _paymentDal.UpdateAsync(payment);
-            return new SuccessResult();
+            var existPayment = await _paymentDal.GetAsync(p => p.Id == paymentUpdateDto.Id);
+            if (existPayment == null)
+            {
+                return new ErrorResult("Kayıtlı ödeme bulunamadı");
+            }
+            _mapper.Map(paymentUpdateDto, existPayment); // 🔁 DTO'dan Entity'e map işlemi
+            await _paymentDal.UpdateAsync(existPayment); // ✅ Güncelleme
+
+            return new SuccessResult("satış başarılı bir şekilde güncellendi");
         }
     }
 }

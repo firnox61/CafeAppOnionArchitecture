@@ -113,11 +113,20 @@ namespace Cafe.Application.Services.Managers
         [ValidationAspect(typeof(OrderUpdateDtoValidator))]
         public async Task<IResult> Update(OrderUpdateDto orderUpdateDto)
         {
+            // 1. Sipariş var mı kontrol et
             var existingOrder = await _orderDal.GetAsync(o => o.Id == orderUpdateDto.Id);
             if (existingOrder == null)
                 return new ErrorResult("Sipariş bulunamadı.");
 
-            // Eski sipariş ürünlerini silmeden önce stokları geri ekle
+            // 2. Masa var mı kontrol et
+            var table = await _tableDal.GetAsync(t => t.Id == orderUpdateDto.TableId);
+            if (table == null)
+                return new ErrorResult($"Geçersiz masa numarası: {orderUpdateDto.TableId}");
+
+            // ✅ Masa güncelle
+            existingOrder.TableId = orderUpdateDto.TableId;
+
+            // 3. Eski sipariş ürünlerini silmeden önce stokları geri ekle
             var oldItems = await _orderItemDal.GetAllAsync(oi => oi.OrderId == existingOrder.Id);
             foreach (var item in oldItems)
             {
@@ -131,7 +140,7 @@ namespace Cafe.Application.Services.Managers
                 await _orderItemDal.DeleteAsync(item);
             }
 
-            // Yeni ürünleri işle
+            // 4. Yeni ürünleri işle
             foreach (var itemDto in orderUpdateDto.Items)
             {
                 var product = await _productDal.GetAsync(p => p.Id == itemDto.ProductId);
@@ -149,27 +158,43 @@ namespace Cafe.Application.Services.Managers
 
                 var newOrderItem = _mapper.Map<OrderItem>(itemDto);
                 newOrderItem.OrderId = existingOrder.Id;
-                newOrderItem.UnitPrice = product.Price; // 💡 doğru fiyatla kaydet
+                newOrderItem.UnitPrice = product.Price;
 
                 await _orderItemDal.AddAsync(newOrderItem);
             }
 
+            // 5. Order kaydını güncelle (şu an için sadece TableId değişti)
+            await _orderDal.UpdateAsync(existingOrder);
+
             return new SuccessResult("Sipariş başarıyla güncellendi.");
         }
 
+
         public async Task<IResult> DeleteOrderAsync(int orderId)
         {
-            var order = await _orderDal.GetAsync(o => o.Id == orderId);
+            var order = await _orderDal.GetWithItemsAsync(orderId);
             if (order == null)
                 return new ErrorResult("Sipariş bulunamadı.");
 
             if (order.IsPaid)
                 return new ErrorResult("Ödenmiş sipariş silinemez.");
 
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _productDal.GetAsync(p => p.Id == item.ProductId);
+                if (product != null)
+                {
+                    product.Stock += item.Quantity;
+                    await _productDal.UpdateAsync(product);
+                }
+            }
+
             await _orderDal.DeleteAsync(order);
-            return new SuccessResult("Sipariş başarıyla silindi.");
+
+            return new SuccessResult("Sipariş başarıyla silindi ve ürün stokları geri yüklendi.");
         }
-
-
     }
+
+
+    
 }

@@ -4,9 +4,9 @@
 //using Microsoft.Extensions.Configuration;
 //using Microsoft.IdentityModel.Tokens;
 
+using Cafe.Core.Extensions;
 using Cafe.Domain.Entities;
 using Cafe.Domain.Security;
-using Cafe.Infrastructure.Extensions;
 using Cafe.Infrastructure.Security.Encryption;
 
 //using Castle.Core.Configuration;

@@ -1,4 +1,5 @@
 ﻿using Cafe.Core.Aspects.Interceptors;
+using Cafe.Infrastructure.Aspects.AuditLogs;
 using Cafe.Infrastructure.Aspects.Logging;
 using Cafe.Infrastructure.Aspects.Performance;
 using Castle.DynamicProxy;
@@ -31,6 +32,10 @@ namespace Cafe.Infrastructure.Aspects.Interceptors
 
             classAttributes.Add(new LogAspect { Priority = 99 });
             classAttributes.Add(new PerformanceAspect(3) { Priority = 98 });
+            if (method.Name != "Get") // örnek: sadece Get hariç hepsine log atalım
+            {
+                classAttributes.Add(new AuditLogAspect { Priority = 97 });
+            }
 
             return classAttributes
                 .OrderBy(x => x.Priority)

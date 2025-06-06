@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Cafe.Infrastructure.IoC
+namespace Cafe.Core.Utilities.IoC
 {
     public static class ServiceTool
     {

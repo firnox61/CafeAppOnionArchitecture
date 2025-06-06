@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
-
-using Cafe.Infrastructure.IoC;
 using Cafe.Infrastructure.Caching;
+using Cafe.Core.Utilities.IoC;
 
 namespace Cafe.WebAPI.DependencyInjection
 {

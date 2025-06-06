@@ -35,6 +35,7 @@ namespace Cafe.Application.MappingProfiles
             CreateMap<Table, TableUpdateDto>().ReverseMap();
 
             CreateMap<Payment, PaymentCreateDto>().ReverseMap();
+            CreateMap<Payment, PaymentUpdateDto>().ReverseMap();
             CreateMap<Payment, PaymentGetDto>().ReverseMap();
 
             CreateMap<Order, OrderCreateDto>().ReverseMap();
@@ -70,7 +71,10 @@ namespace Cafe.Application.MappingProfiles
             CreateMap<ProductIngredient, ProductIngredientDto>().ReverseMap();
 
 
-            CreateMap<Ingredient, StockAlertDto>().ReverseMap();
+            CreateMap<Ingredient, StockAlertDto>()
+    .ForMember(dest => dest.IngredientId, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.IngredientName, opt => opt.MapFrom(src => src.Name));
+
 
             CreateMap<UserCreateDto, User>()
     .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())

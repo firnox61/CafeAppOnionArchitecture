@@ -7,6 +7,7 @@ using Cafe.Application.Services.Managers;
 using Cafe.Core.Aspects.Validation;
 using Cafe.Domain.Security;
 using Cafe.Infrastructure.Aspects.Interceptors;
+using Cafe.Infrastructure.Jobs;
 using Cafe.Infrastructure.Persistence.Repositories.EntityFramework;
 using Cafe.Infrastructure.Security.Hashing;
 using Cafe.Infrastructure.Security.Jwt;
@@ -22,7 +23,7 @@ namespace Cafe.WebAPI.DependencyInjection
             builder.RegisterType<EfIngredientDal>().As<IIngredientDal>().InstancePerLifetimeScope();
 
 
-            // builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
+             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
           //  builder.RegisterType<ProductManager>().As<IProductService>().InstancePerLifetimeScope();
             builder.RegisterType<EfProductDal>().As<IProductDal>().InstancePerLifetimeScope();
           //  builder.RegisterType<FileServiceManager>().As<IFileService>().InstancePerLifetimeScope();
@@ -62,8 +63,9 @@ namespace Cafe.WebAPI.DependencyInjection
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
             builder.RegisterType<HashingService>().As<IHashingService>();
 
+            builder.RegisterType<AuditLogCleanupJob>().AsSelf();
 
-              var managerAssembly = typeof(IngredientManager).Assembly; // En net yol
+            var managerAssembly = typeof(IngredientManager).Assembly; // En net yol
               var coreAssembly = typeof(ValidationAspect).Assembly;
               var infrastructureAssembly = typeof(AspectInterceptorSelector).Assembly;
 

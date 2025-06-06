@@ -28,7 +28,7 @@ namespace Cafe.WebAPI.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> Update(Payment payment)
+        public async Task<IActionResult> Update(PaymentUpdateDto payment)
         {
             var result = await _paymentService.Update(payment);
             if (result.Success)
@@ -39,9 +39,9 @@ namespace Cafe.WebAPI.Controllers
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Delete(Payment payment)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await _paymentService.Delete(payment);
+            var result = await _paymentService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);

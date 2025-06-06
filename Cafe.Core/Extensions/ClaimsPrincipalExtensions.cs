@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Cafe.Infrastructure.Extensions
+namespace Cafe.Core.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {//bu da bir extension tokenin claimlerine ulaşmak için

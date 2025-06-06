@@ -1,6 +1,6 @@
 ﻿using Cafe.Core.Aspects.Interceptors;
+using Cafe.Core.Utilities.IoC;
 using Cafe.Infrastructure.Caching;
-using Cafe.Infrastructure.IoC;
 using Castle.DynamicProxy;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Cafe.Core.Utilities.Results;
 using Cafe.Application.Validators.Products;
 using Cafe.Core.Aspects.Validation;
+using Cafe.Core.Aspects.Security;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -33,6 +34,7 @@ namespace Cafe.Application.Services.Managers
         }
         // [TransactionScopeAspect]
         [ValidationAspect(typeof(ProductCreateDtoValidator))]
+        //[SecuredOperation("Admin")]
         public async Task<IResult> Add(ProductCreateDto productCreateDto)
         {
             // 1. Malzeme stok kontrolü

@@ -1,4 +1,4 @@
-﻿using Cafe.Infrastructure.IoC;
+﻿using Cafe.Core.Utilities.IoC;
 
 namespace Cafe.WebAPI.DependencyInjection
 {

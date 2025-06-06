@@ -26,6 +26,8 @@ namespace Cafe.Infrastructure.Persistence.Context
         public DbSet<User> Users => Set<User>();
         public DbSet<OperationClaim> OperationClaims => Set<OperationClaim>();
         public DbSet<UserOperationClaim> UserOperationClaims => Set<UserOperationClaim>();
+        public DbSet<AuditLog> AuditLogs =>Set<AuditLog>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Composite key
