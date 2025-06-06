@@ -9,6 +9,7 @@ using Cafe.Core.Utilities.Results;
 using Cafe.Application.Validators.Products;
 using Cafe.Core.Aspects.Validation;
 using Cafe.Core.Aspects.Security;
+using Cafe.Core.Abstractions;
 
 namespace Cafe.Application.Services.Managers
 {
@@ -61,6 +62,8 @@ namespace Cafe.Application.Services.Managers
                 Stock = productCreateDto.Stock,
                 CreatedAt = DateTime.UtcNow,
                 ImageFileName = fileName,
+                CategoryId = productCreateDto.CategoryId // ✅ EKLE
+
             };
 
             await _productDal.AddAsync(product);
@@ -191,7 +194,7 @@ namespace Cafe.Application.Services.Managers
             product.Name = productUpdateDto.Name;
             product.Description = productUpdateDto.Description;
             product.Price = productUpdateDto.Price;
-
+            product.CategoryId = productUpdateDto.CategoryId; // ✅ BURAYI EKLE
             var stockDifference = productUpdateDto.Stock - product.Stock;
             bool isStockIncreased = stockDifference > 0;
 
@@ -377,7 +380,9 @@ namespace Cafe.Application.Services.Managers
                 Price = dto.Price,
                 Stock = dto.Stock,
                 CreatedAt = DateTime.UtcNow,
-                ImageFileName = fileName
+                ImageFileName = fileName,
+                CategoryId = dto.CategoryId
+
             };
         }
         private async Task LogProductionAsync(Product product)

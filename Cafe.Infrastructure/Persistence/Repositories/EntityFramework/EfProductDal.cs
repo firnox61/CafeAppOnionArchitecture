@@ -13,24 +13,29 @@ namespace Cafe.Infrastructure.Persistence.Repositories.EntityFramework
         public async Task<List<ProductGetDto>> GetProductDetailsAsync()
         {
             var result = await _context.Products
-                .Include(p => p.ProductIngredients)
-                    .ThenInclude(pi => pi.Ingredient)
-                .Select(p => new ProductGetDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Price = p.Price,
-                    Stock = p.Stock,
-                    ImageFileName = p.ImageFileName,
-                    Ingredients = p.ProductIngredients.Select(pi => new ProductIngredientDto
-                    {
-                        IngredientId = pi.IngredientId,
-                        IngredientName = pi.Ingredient.Name,
-                        QuantityRequired = pi.QuantityRequired
-                    }).ToList()
-                })
-                .ToListAsync();
+      .Include(p => p.Category) // ← bu satır eklendi
+      .Include(p => p.ProductIngredients)
+          .ThenInclude(pi => pi.Ingredient)
+      .Select(p => new ProductGetDto
+      {
+          Id = p.Id,
+          Name = p.Name,
+          Description = p.Description,
+          Price = p.Price,
+          Stock = p.Stock,
+          ImageFileName = p.ImageFileName,
+
+          CategoryId = p.CategoryId,
+          CategoryName = p.Category.Name,
+
+          Ingredients = p.ProductIngredients.Select(pi => new ProductIngredientDto
+          {
+              IngredientId = pi.IngredientId,
+              IngredientName = pi.Ingredient.Name,
+              QuantityRequired = pi.QuantityRequired
+          }).ToList()
+      })
+      .ToListAsync();
 
             return result;
         }

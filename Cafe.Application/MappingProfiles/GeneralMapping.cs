@@ -19,7 +19,13 @@ namespace Cafe.Application.MappingProfiles
             CreateMap<Product, ProductCreateDto>().ReverseMap();
             CreateMap<ProductIngredient, ProductIngredientCreateDto>().ReverseMap();
             CreateMap<Product, ProductGetDto>()
-    .ForMember(dest => dest.Ingredients, opt => opt.MapFrom(src => src.ProductIngredients));
+      .ForMember(dest => dest.Ingredients,
+          opt => opt.MapFrom(src => src.ProductIngredients))
+      .ForMember(dest => dest.CategoryId,
+          opt => opt.MapFrom(src => src.CategoryId))
+      .ForMember(dest => dest.CategoryName,
+          opt => opt.MapFrom(src => src.Category.Name));
+
 
 
             CreateMap<Table, TableCreateDto>().ReverseMap();
