@@ -22,8 +22,8 @@ namespace Cafe.WebAPI.DependencyInjection
             builder.RegisterType<IngredientManager>().As<IIngredientService>().InstancePerLifetimeScope();
             builder.RegisterType<EfIngredientDal>().As<IIngredientDal>().InstancePerLifetimeScope();
 
-
-             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
+            builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().InstancePerLifetimeScope();
+            builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
           //  builder.RegisterType<ProductManager>().As<IProductService>().InstancePerLifetimeScope();
             builder.RegisterType<EfProductDal>().As<IProductDal>().InstancePerLifetimeScope();
           //  builder.RegisterType<FileServiceManager>().As<IFileService>().InstancePerLifetimeScope();

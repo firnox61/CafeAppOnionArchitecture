@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Cafe.Application.DTOs.Categories;
 using Cafe.Application.DTOs.Ingredients;
 using Cafe.Application.DTOs.Orders;
 using Cafe.Application.DTOs.Payments;
@@ -16,6 +17,10 @@ namespace Cafe.Application.MappingProfiles
 
         public GeneralMapping()
         {
+            CreateMap<Category, CategoryCreateDto>().ReverseMap();
+            CreateMap<Category, CategoryUpdateDto>().ReverseMap();
+            CreateMap<Category, CategoryGetDto>();
+
             CreateMap<Product, ProductCreateDto>().ReverseMap();
             CreateMap<ProductIngredient, ProductIngredientCreateDto>().ReverseMap();
             CreateMap<Product, ProductGetDto>()

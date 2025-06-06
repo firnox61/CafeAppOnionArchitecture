@@ -14,6 +14,7 @@ namespace Cafe.Infrastructure.Persistence.Context
          {
          }*/
 
+        public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Ingredient> Ingredients => Set<Ingredient>();
         public DbSet<ProductIngredient> ProductIngredients => Set<ProductIngredient>();
