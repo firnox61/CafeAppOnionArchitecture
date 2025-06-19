@@ -1,69 +1,75 @@
-# ☕ Cafe Management System - Onion Architecture (.NET 8)
+from pathlib import Path
 
-A modular and scalable **Cafe Management System** built with **Onion Architecture** using ASP.NET Core 8, Entity Framework Core, AutoMapper, FluentValidation, JWT, and Autofac.
+# Define the content from the canvas document
+readme_content = """# ☕ Cafe Management System - Onion Architecture (.NET 8)
 
----
-
-## 📐 Architecture Overview
-
-The project follows **Onion Architecture**, which promotes a separation of concerns and allows better testability, scalability, and maintainability.
-
+A modular, maintainable, and production-ready Cafe Management System developed with **Onion Architecture** using **ASP.NET Core 8**, **Entity Framework Core**, **AutoMapper**, **FluentValidation**, **JWT**, **Autofac**, **Hangfire**, and more.
 
 ---
 
-## 📦 Project Structure
+## 📊 Project Architecture
 
-### ✅ Cafe.Domain
-- Contains `Entities` like `Product`, `Order`, `User`, `Table`, etc.
-- Common interfaces: `IEntity`, etc.
-- No dependencies to other layers.
+This solution follows the principles of **Onion Architecture**, promoting a clean separation of concerns between layers:
 
-### ✅ Cafe.Application
-- Business logic (`Service` classes, `Interfaces`)
-- `DTOs` for communication between layers
-- `AutoMapper` profiles
-- `BusinessRules`, `ValidationTool`, `Results` (IResult, IDataResult, etc.)
+### Layers:
 
-### ✅ Cafe.Infrastructure
-- Implements interfaces from `Application` layer
-- `EF Core` data access via `Repositories/EntityFramework`
-- `Security`: `JwtHelper`, `HashingHelper`
-- `Caching`: `ICacheManager`, `MemoryCacheManager`
-- `Aspects`: Logging, Caching, Validation, Performance, Transaction
+- **Cafe.Domain**\
+  Domain entities: `Product`, `Order`, `User`, `Table`, etc.\
+  Interfaces like `IEntity`, `IAggregateRoot`
 
-### ✅ Cafe.WebAPI
-- API endpoints (`Controllers`)
-- `ExceptionMiddleware` for global error handling
-- `DependencyInjection` setup (Autofac + IServiceCollection)
-- Swagger configuration
-- JWT Authentication setup
-- Static file serving from `wwwroot/`
+- **Cafe.Application**\
+  Business logic, service contracts, DTOs, validators, AutoMapper profiles, and business rules
 
----
+- **Cafe.Infrastructure**
 
-## 🔧 Technologies Used
+  - **Persistence**: EF Core Repositories and DbContext
+  - **Security**: JWT, hashing, encryption helpers
+  - **Caching**: `ICacheManager` with memory cache
+  - **AOP Aspects**: Logging, Performance, Transaction, Validation
+  - **Hangfire**: Scheduled job setup
 
-- [.NET 8](https://dotnet.microsoft.com/)
-- **Entity Framework Core** (Code First)
-- **AutoMapper** (Object-to-Object Mapping)
-- **FluentValidation** (Input validation)
-- **Autofac** (Dependency Injection + AOP)
-- **JWT Authentication**
-- **Swagger / Swashbuckle**
-- **ClosedXML** (Excel export)
-- **Onion Architecture**
-- **SOLID & Clean Code principles**
+- **Cafe.Core**\
+  Shared utilities: `Result` classes, dependency injection helpers, aspect interceptors
+
+- **Cafe.WebAPI**\
+  ASP.NET Core 8 Web API exposing endpoints for frontend integration\
+  Features custom exception middleware, Swagger, JWT auth, rate limiting, static file serving, and Hangfire Dashboard.
 
 ---
 
-## 🚀 Getting Started
+## 📁 Main Features
+
+- ✅ Modular Onion Architecture
+- 🔑 JWT Authentication
+- ✔️ Role-based Authorization
+- ⚙ AOP with Autofac (Validation, Logging, Performance, Caching)
+- 📥 Excel export with ClosedXML
+- ⌚ Rate Limiting using `FixedWindowRateLimiter`
+- 📊 Health Checks for database
+- ⏰ Scheduled Tasks with Hangfire (e.g., log cleanup)
+- 🔧 Global Exception Handling Middleware
+- 🎨 Swagger UI for API testing
+
+---
+
+## 🏃 Getting Started
 
 ### Prerequisites
 
-- .NET 8 SDK
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - SQL Server or LocalDB
-- Visual Studio 2022+ or Rider
+- Visual Studio 2022+ / JetBrains Rider
 
----
+### Setup Instructions
 
+```bash
+# Clone the repository
+$ git clone https://github.com/yourusername/cafe-management-system.git
+$ cd cafe-management-system
 
+# Update DB connection string in `appsettings.json`
+# Apply EF Core migrations (if not applied)
+$ dotnet ef database update --project Cafe.Infrastructure --startup-project Cafe.WebAPI
+
+# Run the project
+$ dotnet run --project Cafe.WebAPI
