@@ -144,11 +144,12 @@ Swagger UI: `https://localhost:{port}/swagger`
 ## ⚡ Sample Token Configuration
 
 ```json
-"TokenOptions": {
-  "Issuer": "CafeAPI",
-  "Audience": "CafeUsers",
-  "SecurityKey": "supersecurekey123456"
-}
+ "TokenOptions": {
+   "Audience": "your@email.com",
+   "Issuer": "your@email.com",
+   "AccessTokenExpiration": 10,
+   "SecurityKey": "mysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkeymysupersecretkey"
+ }
 ```
 
 ---
@@ -161,10 +162,10 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## ✉ Contact
 
-Project developed by **[Your Name or Team]**
+Project developed by **[İSMAİL ENES EROĞLU]**
 
-- GitHub: [github.com/yourusername](https://github.com/yourusername)
-- Email: [your@email.com](mailto:your@email.com)
+- GitHub: [github.com/firnox61](https://github.com/firnox61)
+- Email: [ismaileneseroglu@gmail.com](mailto:ismaileneseroglu@gmail.com)
 
 ---
 
